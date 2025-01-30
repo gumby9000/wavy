@@ -1,24 +1,31 @@
 import Map from '../components/Map'
 import 'tailwindcss/tailwind.css';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import Link from 'next/link';
 console.log('Token available:', process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN);
 export default function Wavy() {
     return (
         
-        <div className="flex h-screen w-full">
+    <div className="flex h-screen w-full">
       {/* Navigation Sidebar - 1/4 width */}
       <nav className="w-[250px] bg-slate-800 text-white p-4 overflow-y-auto">
         <h1 className="text-xl font-bold mb-4">Wavy Weather</h1>
         {/* Add your navigation items here */}
         <div className="space-y-4">
           <div className="p-2 hover:bg-slate-700 rounded cursor-pointer">
-            Weather Map
+            <Link href="/Wavy">
+                Weather Map
+            </Link>
           </div>
           <div className="p-2 hover:bg-slate-700 rounded cursor-pointer">
-            Historical Data
+            <Link href="/data">
+                Historical Data
+            </Link>
           </div>
           <div className="p-2 hover:bg-slate-700 rounded cursor-pointer">
-            Settings
+            <Link href="/about">
+                About
+            </Link>
           </div>
         </div>
       </nav>
