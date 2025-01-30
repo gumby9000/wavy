@@ -139,7 +139,7 @@ const Map = () => {
             />
             <div 
                 ref={coordinatesDisplay}
-                className="absolute bottom-4 left-4 bg-white p-2 rounded shadow z-10"
+                className="absolute top-4 right-4 bg-white p-2 rounded shadow z-10"
             >
                 Coordinates and Data
             </div>
