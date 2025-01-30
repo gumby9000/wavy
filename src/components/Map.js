@@ -141,7 +141,7 @@ const Map = () => {
                 ref={coordinatesDisplay}
                 className="absolute top-4 right-4 bg-white p-2 rounded shadow z-10"
             >
-                Coordinates and Data
+                Tap somewhere to see data
             </div>
         </div>
     );
