@@ -27,8 +27,21 @@ const Map = () => {
                 const lng = roundToHundredth(e.lngLat.lng);
                 const lat = roundToHundredth(e.lngLat.lat);
                 
+                const wvFeatures = map.current.queryRenderedFeatures(e.point, {
+                    layers: ['wave-height-grid-layer']
+                });
+
+                let wvht = 'N/A';
+                if(wvFeatures.length > 0) {
+                    wvht = roundToHundredth(wvFeatures[0].properties.wave_height_ft);
+                }
                 if (coordinatesDisplay.current) {
-                    coordinatesDisplay.current.innerHTML = `${lng}, ${lat}`;
+                    
+                    const tileX = Math.floor((lng + 180) / 0.5);
+                    const tileY = Math.floor((lat + 90) / 0.5);
+                    const tileRef = `Tile: [${tileX}, ${tileY}]`;
+
+                    coordinatesDisplay.current.innerHTML = `${lng}, ${lat}<br/> ${wvht} ft`;
                 }
             });
 

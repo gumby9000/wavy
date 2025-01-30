@@ -8,27 +8,7 @@ export default function Wavy() {
         
     <div className="flex h-screen w-full">
       {/* Navigation Sidebar - 1/4 width */}
-      <nav className="w-[250px] bg-slate-800 text-white p-4 overflow-y-auto">
-        <h1 className="text-xl font-bold mb-4">Wavy Weather</h1>
-        {/* Add your navigation items here */}
-        <div className="space-y-4">
-          <div className="p-2 hover:bg-slate-700 rounded cursor-pointer">
-            <Link href="/Wavy">
-                Weather Map
-            </Link>
-          </div>
-          <div className="p-2 hover:bg-slate-700 rounded cursor-pointer">
-            <Link href="/data">
-                Historical Data
-            </Link>
-          </div>
-          <div className="p-2 hover:bg-slate-700 rounded cursor-pointer">
-            <Link href="/about">
-                About
-            </Link>
-          </div>
-        </div>
-      </nav>
+
 
       {/* Map Container - 3/4 width */}
       <div className="flex-1 h-full">
