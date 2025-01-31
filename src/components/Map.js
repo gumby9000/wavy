@@ -6,6 +6,25 @@ const Map = () => {
     const map = useRef(null);
     const coordinatesDisplay = useRef(null);
     const [error, setError] = useState(null);
+    const [currentLayer, setCurrentLayer] = useState(null);
+
+    const fetchLayerData = async (layerName, temporalType, timePeriod) => {
+        try {
+            const response = await fetch(
+                `/api/layers?layer_name=${layerName}&temporal_type=${temporalType}&time_period=${timePeriod}`
+            );
+
+            if(!response.ok){
+                throw new Error('Failed to fetch layer data');
+            }
+            
+            const data = await response.json();
+            return data;
+        } catch(error) {
+            console.error('Error fetching layer:', error);
+            throw error;
+        }
+    };
 
     const roundToHundredth = (num) => Math.round(num * 100) / 100;
 
@@ -19,7 +38,7 @@ const Map = () => {
                 container: mapContainer.current,
                 style: 'mapbox://styles/mapbox/streets-v11',
                 center: [-81.79, 26.14],
-                zoom: 6
+                zoom: 4
             });
 
             // Mouse move event for coordinates display
@@ -50,36 +69,13 @@ const Map = () => {
                 console.log('Map loaded successfully');
                 
                 try {
-                    // Florida state outline
-                    const flResponse = await fetch('/geojson/fl.json');
-                    if (!flResponse.ok) {
-                        throw new Error(`Failed to load Florida state data: ${flResponse.status}`);
-                        // console.log("couldnt load florida");
-                    }
-                    const flData = await flResponse.json();
-                    console.log('Florida data loaded:', flData);
-                    
-                    map.current.addSource('florida', {
-                        'type': 'geojson',
-                        'data': flData
-                    });
-
-                    map.current.addLayer({
-                        'id': 'florida-outline',
-                        'type': 'line',
-                        'source': 'florida',
-                        'layout': {},
-                        'paint': {
-                            'line-color': '#000',
-                            'line-width': 2,
-                            'line-opacity': 0.0
-                        }
-                    });
-
                     // Wave height grid
+
                     const waveResponse = await fetch('/geojson/wave_height_grid.geojson');
                     if (!waveResponse.ok) throw new Error('Failed to load wave height data');
-                    const waveData = await waveResponse.json();
+                    
+                    // const waveData = await waveResponse.json();
+                    const waveData = await fetchLayerData('wave_height', 'current', 'jan24');
 
                     map.current.addSource('wave-height-grid', {
                         'type': 'geojson',
