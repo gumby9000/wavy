@@ -75,11 +75,11 @@ const Map = () => {
                     if (!waveResponse.ok) throw new Error('Failed to load wave height data');
                     
                     // const waveData = await waveResponse.json();
-                    const waveData = await fetchLayerData('wave_height', 'current', 'jan24');
+                    //const waveData = await fetchLayerData('wave_height', 'current', 'jan24');
 
                     map.current.addSource('wave-height-grid', {
                         'type': 'geojson',
-                        'data': waveData
+                        'data': '/geojson/wave_height_grid.geojson'
                     });
 
                     map.current.addLayer({
