@@ -5,8 +5,10 @@ const Map = () => {
     const mapContainer = useRef(null);
     const map = useRef(null);
     const coordinatesDisplay = useRef(null);
+    const dataDisplay = useRef(null);
     const [error, setError] = useState(null);
     const [currentLayer, setCurrentLayer] = useState(null);
+    const [centerPoint, setCenterPoint] = useState(null);
 
     const fetchLayerData = async (layerName, temporalType, timePeriod) => {
         try {
@@ -28,6 +30,34 @@ const Map = () => {
 
     const roundToHundredth = (num) => Math.round(num * 100) / 100;
 
+    const updateDataAtCursor = () => {
+        if (!map.current || !centerPoint) return;
+
+        const point = map.current.project(centerPoint);
+        const features = map.current.queryRenderedFeatures(point, {
+            layers: ['wave-height-grid-layer']
+        });
+
+        const lng = roundToHundredth(centerPoint.lng);
+        const lat = roundToHundredth(centerPoint.lat);
+        let wvht = 'N/A';
+
+        if (features.length > 0) {
+            wvht = roundToHundredth(features[0].properties.wave_height_ft);
+        }
+
+        if (dataDisplay.current) {
+            const tileX = Math.floor((lng + 180) / 0.5);
+            const tileY = Math.floor((lat + 90) / 0.5);
+            dataDisplay.current.innerHTML = `
+                <div class="text-sm">
+                    <div class="font-medium">Coordinates: ${lng}, ${lat}</div>
+                    <div>Wave Height: ${wvht} ft</div>
+                    <div class="text-gray-500">Tile: [${tileX}, ${tileY}]</div>
+                </div>
+            `;
+        }
+    }
     useEffect(() => {
         if (map.current) return;
 
@@ -42,32 +72,57 @@ const Map = () => {
             });
 
             // Mouse move event for coordinates display
-            map.current.on('mousemove', (e) => {
-                const lng = roundToHundredth(e.lngLat.lng);
-                const lat = roundToHundredth(e.lngLat.lat);
+            // map.current.on('mousemove', (e) => {
+            //     const lng = roundToHundredth(e.lngLat.lng);
+            //     const lat = roundToHundredth(e.lngLat.lat);
                 
-                const wvFeatures = map.current.queryRenderedFeatures(e.point, {
-                    layers: ['wave-height-grid-layer']
-                });
+            //     const wvFeatures = map.current.queryRenderedFeatures(e.point, {
+            //         layers: ['wave-height-grid-layer']
+            //     });
 
-                let wvht = 'N/A';
-                if(wvFeatures.length > 0) {
-                    wvht = roundToHundredth(wvFeatures[0].properties.wave_height_ft);
-                }
-                if (coordinatesDisplay.current) {
+            //     let wvht = 'N/A';
+            //     if(wvFeatures.length > 0) {
+            //         wvht = roundToHundredth(wvFeatures[0].properties.wave_height_ft);
+            //     }
+            //     if (coordinatesDisplay.current) {
                     
-                    const tileX = Math.floor((lng + 180) / 0.5);
-                    const tileY = Math.floor((lat + 90) / 0.5);
-                    const tileRef = `Tile: [${tileX}, ${tileY}]`;
+            //         const tileX = Math.floor((lng + 180) / 0.5);
+            //         const tileY = Math.floor((lat + 90) / 0.5);
+            //         const tileRef = `Tile: [${tileX}, ${tileY}]`;
 
-                    coordinatesDisplay.current.innerHTML = `${lng}, ${lat}<br/> ${wvht} ft`;
-                }
-            });
+            //         coordinatesDisplay.current.innerHTML = `${lng}, ${lat}<br/> ${wvht} ft`;
+            //     }
+            // });
 
             // Add Florida outline when map loads
             map.current.on('load', async () => {
                 console.log('Map loaded successfully');
                 
+                console.log('Map loaded successfully');
+                
+                // Calculate center point in upper third of viewport
+                const bounds = map.current.getBounds();
+                const center = map.current.getCenter();
+                setCenterPoint(center);
+
+                // Add cursor point marker
+                const cursorElement = document.createElement('div');
+                cursorElement.className = 'cursor-point';
+                cursorElement.innerHTML = `
+                    <div class="w-4 h-4 relative">
+                        <div class="absolute w-4 h-4 bg-blue-500 rounded-full opacity-25 animate-ping"></div>
+                        <div class="absolute w-3 h-3 bg-white rounded-full left-0.5 top-0.5"></div>
+                        <div class="absolute w-2 h-2 bg-blue-500 rounded-full left-1 top-1"></div>
+                    </div>
+                `;
+
+                new mapboxgl.Marker({
+                    element: cursorElement,
+                    anchor: 'center'
+                })
+                .setLngLat(center)
+                .addTo(map.current);
+
                 try {
                     // Wave height grid
 
@@ -134,10 +189,9 @@ const Map = () => {
                 className="absolute inset-0"
             />
             <div 
-                ref={coordinatesDisplay}
+                ref={dataDisplay}
                 className="absolute top-4 right-4 bg-white p-2 rounded shadow z-10"
             >
-                Tap somewhere to see data
             </div>
         </div>
     );
