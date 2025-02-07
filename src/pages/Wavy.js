@@ -21,7 +21,8 @@ export default function Wavy() {
       {/* Navigation Sidebar - 1/4 width */}
       {/* Map Container - 3/4 width */}
       <div className="flex-1 h-full"
-           onMouseDown={() => setShowPopup(false)}>
+           onMouseDown={() => setShowPopup(false)}
+           onTouchStart={() => setShowPopup(false)}>
         <Map/>
         {showPopup && (
           <div
@@ -29,12 +30,11 @@ export default function Wavy() {
           >
               <p className='text-gray-800 text-center'>
                   Displayed is the long term average wave height for January<br/>
-                  Click or tap and drag to move around the map<br/>
-                 
+                  Click, or drag to move around the map<br/>
               </p>
           </div>
         )}
-            <MonthTimeline onMonthChange={handleMonthChange}/>
+            {/* <MonthTimeline onMonthChange={handleMonthChange}/> */}
       </div>
     </div>
     );
