@@ -21,15 +21,16 @@ export default function Wavy() {
       {/* Navigation Sidebar - 1/4 width */}
       {/* Map Container - 3/4 width */}
       <div className="flex-1 h-full"
-           onClick={() => setShowPopup(false)}>
+           onMouseDown={() => setShowPopup(false)}>
         <Map/>
         {showPopup && (
           <div
               className='absolute top-4 left-1/2 transform -translate-x-1/2 bg-white p-4 rounded-lg shadow-lg cursor-pointer z-10'
           >
               <p className='text-gray-800 text-center'>
-                  Welcome to Wavy!<br/>
-                  Click or tap and drag to move around the map
+                  Displayed is the long term average wave height for January<br/>
+                  Click or tap and drag to move around the map<br/>
+                 
               </p>
           </div>
         )}
