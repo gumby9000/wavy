@@ -9,6 +9,8 @@ const Map = () => {
     const [error, setError] = useState(null);
     const [currentLayer, setCurrentLayer] = useState(null);
     const [centerPoint, setCenterPoint] = useState(null);
+    const [colorMode, setColorMode] = useState('absolute');
+    const [interpolationMode, setInterpolationMode] = useState('step');
 
     const fetchLayerData = async (layerName, temporalType, timePeriod) => {
         try {
@@ -63,6 +65,90 @@ const Map = () => {
                     <div>Wave Height: ${wvht} ft</div>
                 </div>
             `;
+        }
+    };
+
+    const getColorScale = (colorMode, interpolationMode) => {
+        const absoluteColors = interpolationMode === 'step' ? [
+            'step',
+            ['get', 'wave_height_ft'],
+            '#0a1597',  // default color for values < 2
+            2, '#1734f9',
+            4, '#106dfb',
+            6, '#009bfc',
+            8, '#00c9fc',
+            10, '#00fdcb',
+            12, '#00fc9c',
+            14, '#00f95c',
+            16, '#8cfb38',
+            18, '#c9fc3a',
+            20, '#fcfa3a'
+        ] : [
+            'interpolate',
+            ['linear'],
+            ['get', 'wave_height_ft'],
+            0, '#0a1597',
+            2, '#1734f9',
+            4, '#106dfb',
+            6, '#009bfc',
+            8, '#00c9fc',
+            10, '#00fdcb',
+            12, '#00fc9c',
+            14, '#00f95c',
+            16, '#8cfb38',
+            18, '#c9fc3a',
+            20, '#fcfa3a'
+        ];
+
+        const relativeColors = interpolationMode === 'step' ? [
+            'step',
+            ['get', 'wave_height_ft'],
+            '#0017ff',   // default color for values < 2
+            2, '#005bff',
+            4, '#00fff4',
+            5, '#0fff00',
+            6, '#ddff00',
+            8, '#ff0000',
+            10, '#ff00be',
+            12, '#9400d3',
+            14, '#4b0082',
+            16, '#800080',
+            18, '#4a0043',
+            20, '#ffffff'
+        ] : [
+            'interpolate',
+            ['linear'],
+            ['get', 'wave_height_ft'],
+            1, '#0017ff',
+            2, '#005bff',
+            4, '#00fff4',
+            5, '#0fff00',
+            6, '#ddff00',
+            8, '#ff0000',
+            10, '#ff00be',
+            12, '#9400d3',
+            14, '#4b0082',
+            16, '#800080',
+            18, '#4a0043',
+            20, '#ffffff'
+        ];
+
+        return colorMode === 'absolute' ? absoluteColors : relativeColors;
+    };
+
+    const toggleColorMode = () => {
+        const newMode = colorMode === 'absolute' ? 'relative' : 'absolute';
+        setColorMode(newMode);
+        if (map.current) {
+            map.current.setPaintProperty('wave-height-grid-layer', 'fill-color', getColorScale(newMode, interpolationMode));
+        }
+    };
+
+    const toggleInterpolationMode = () => {
+        const newMode = interpolationMode === 'step' ? 'interpolate' : 'step';
+        setInterpolationMode(newMode);
+        if (map.current) {
+            map.current.setPaintProperty('wave-height-grid-layer', 'fill-color', getColorScale(colorMode, newMode));
         }
     };
 
@@ -124,23 +210,7 @@ const Map = () => {
                         'type': 'fill',
                         'source': 'wave-height-grid',
                         'paint': {
-                            'fill-color': [
-                                'interpolate',
-                                ['linear'],
-                                ['get', 'wave_height_ft'],
-                                1, '#0017ff',   // Deep blue
-                                2, '#005bff',   // Medium blue
-                                4, '#00fff4',   // Cyan
-                                5, '#0fff00',   // Bright green
-                                6, '#ddff00',   // Yellow
-                                8, '#ff0000',   // Red
-                                10, '#ff00be',  // Pink
-                                12, '#9400d3',  // Purple
-                                14, '#4b0082',  // Indigo
-                                16, '#800080',  // Deep purple
-                                18, '#4a0043',  // Very dark purple
-                                20, '#ffffff'   // White
-                            ],
+                            'fill-color': getColorScale('absolute', 'step'),
                             'fill-opacity': 0.8
                         }
                     });
@@ -165,9 +235,6 @@ const Map = () => {
                         updateDataAtCursor();
                     });
 
-                    // Initial data update
-                    updateDataAtCursor();
-
                 } catch (err) {
                     console.error('Error loading map data:', err);
                     setError('Failed to load map data. Please check the console for details.');
@@ -185,7 +252,9 @@ const Map = () => {
             setError('Failed to initialize map.');
         }
 
-        return () => map.current?.remove();
+        return () => {
+            map.current?.remove();
+        };
     }, []);
 
     
@@ -199,6 +268,20 @@ const Map = () => {
                 ref={dataDisplay}
                 className="absolute top-4 right-4 bg-white p-2 rounded shadow z-10"
             />
+            <div className="absolute top-4 left-4 flex gap-2">
+                <button
+                    onClick={toggleColorMode}
+                    className="bg-white px-3 py-2 rounded shadow z-10 hover:bg-gray-100"
+                >
+                    {colorMode === 'absolute' ? 'Switch to Relative' : 'Switch to Absolute'}
+                </button>
+                <button
+                    onClick={toggleInterpolationMode}
+                    className="bg-white px-3 py-2 rounded shadow z-10 hover:bg-gray-100"
+                >
+                    {interpolationMode === 'step' ? 'Switch to Smooth' : 'Switch to Steps'}
+                </button>
+            </div>
         </div>
     );
 }
