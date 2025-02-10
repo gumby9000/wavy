@@ -9,8 +9,8 @@ const Map = () => {
     const [error, setError] = useState(null);
     const [currentLayer, setCurrentLayer] = useState(null);
     const [centerPoint, setCenterPoint] = useState(null);
-    const [colorMode, setColorMode] = useState('absolute');
-    const [interpolationMode, setInterpolationMode] = useState('step');
+    const [colorMode, setColorMode] = useState('relative');
+    const [interpolationMode, setInterpolationMode] = useState('interpolate');
 
     const fetchLayerData = async (layerName, temporalType, timePeriod) => {
         try {
@@ -63,6 +63,8 @@ const Map = () => {
                 <div class="text-sm">
                     <div class="font-medium">Coordinates: ${lng}, ${lat}</div>
                     <div>Wave Height: ${wvht} ft</div>
+                    <div>Period: n/a </div>
+                    <div>Direction: n/a </div>
                 </div>
             `;
         }
@@ -108,6 +110,7 @@ const Map = () => {
             4, '#00fff4',
             5, '#0fff00',
             6, '#ddff00',
+            7, '#ff7300',
             8, '#ff0000',
             10, '#ff00be',
             12, '#9400d3',
@@ -124,6 +127,7 @@ const Map = () => {
             4, '#00fff4',
             5, '#0fff00',
             6, '#ddff00',
+            7, '#ff7300',
             8, '#ff0000',
             10, '#ff00be',
             12, '#9400d3',
@@ -137,7 +141,7 @@ const Map = () => {
     };
 
     const toggleColorMode = () => {
-        const newMode = colorMode === 'absolute' ? 'relative' : 'absolute';
+        const newMode = colorMode === 'relative' ? 'absolute' : 'relative';
         setColorMode(newMode);
         if (map.current) {
             map.current.setPaintProperty('wave-height-grid-layer', 'fill-color', getColorScale(newMode, interpolationMode));
@@ -145,7 +149,7 @@ const Map = () => {
     };
 
     const toggleInterpolationMode = () => {
-        const newMode = interpolationMode === 'step' ? 'interpolate' : 'step';
+        const newMode = interpolationMode === 'interpolate' ? 'step' : 'interpolate';
         setInterpolationMode(newMode);
         if (map.current) {
             map.current.setPaintProperty('wave-height-grid-layer', 'fill-color', getColorScale(colorMode, newMode));
@@ -210,7 +214,7 @@ const Map = () => {
                         'type': 'fill',
                         'source': 'wave-height-grid',
                         'paint': {
-                            'fill-color': getColorScale('absolute', 'step'),
+                            'fill-color': getColorScale('relative', 'interpolate'),
                             'fill-opacity': 0.8
                         }
                     });
@@ -268,18 +272,18 @@ const Map = () => {
                 ref={dataDisplay}
                 className="absolute top-4 right-4 bg-white p-2 rounded shadow z-10"
             />
-            <div className="absolute top-4 left-4 flex gap-2">
+            <div className="absolute top-20 pt-10 right-4 flex flex-col gap-2">
                 <button
                     onClick={toggleColorMode}
                     className="bg-white px-3 py-2 rounded shadow z-10 hover:bg-gray-100"
                 >
-                    {colorMode === 'absolute' ? 'Switch to Relative' : 'Switch to Absolute'}
+                    {colorMode === 'absolute' ? 'Wavy Colors' : 'Surfline Colors'}
                 </button>
                 <button
                     onClick={toggleInterpolationMode}
                     className="bg-white px-3 py-2 rounded shadow z-10 hover:bg-gray-100"
                 >
-                    {interpolationMode === 'step' ? 'Switch to Smooth' : 'Switch to Steps'}
+                    {interpolationMode === 'step' ? 'Smooth' : 'Contours'}
                 </button>
             </div>
         </div>
