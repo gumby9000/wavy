@@ -356,23 +356,23 @@ const Map = () => {
                 className="absolute top-4 right-4 bg-white p-2 rounded shadow z-10"
             />
             <div className="absolute top-20 pt-10 right-4 flex flex-col gap-2">
-                <button
+                {/* <button
                     onClick={toggleColorMode}
                     className="bg-white px-3 py-2 rounded shadow z-10 hover:bg-gray-100"
                 >
                     {colorMode === 'absolute' ? 'Wavy Colors' : 'Surfline Colors'}
-                </button>
+                </button> */}
                 <button
                     onClick={toggleInterpolationMode}
                     className="bg-white px-3 py-2 rounded shadow z-10 hover:bg-gray-100"
                 >
-                    {interpolationMode === 'step' ? 'Smooth' : 'Contours'}
+                    {interpolationMode === 'step' ? 'Contours' : 'Smooth'}
                 </button>
                 <button
                     onClick={toggleDataSource}
                     className="bg-white px-3 py-2 rounded shadow z-10 hover:bg-gray-100"
                 >
-                    {dataSource === '40' ?  '40 yr avg' : '2025 avg'}
+                    {dataSource === '40' ?  '1980-2024' : '2025'}
                 </button>
             </div>
         </div>
