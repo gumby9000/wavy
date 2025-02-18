@@ -29,8 +29,9 @@ export default function Wavy() {
               className='absolute top-4 left-1/2 transform -translate-x-1/2 bg-white p-4 rounded-lg shadow-lg cursor-pointer z-10'
           >
               <p className='text-gray-800 text-center'>
-                  Displayed is the long term average wave height for January<br/>
+                  Displayed is the average wave height for January 2025<br/>
                   Click, or drag to move around the map<br/>
+                  Click the button to compare to the 40 year average
               </p>
           </div>
         )}

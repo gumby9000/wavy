@@ -11,7 +11,40 @@ const Map = () => {
     const [centerPoint, setCenterPoint] = useState(null);
     const [colorMode, setColorMode] = useState('relative');
     const [interpolationMode, setInterpolationMode] = useState('interpolate');
+    const [dataSource, setDataSource] = useState('2025')
+    const [dataPath, setDataPath] = useState('/geojson/scripts/Converters/wave_parameters_grid5.geojson')
 
+    useEffect(() => {
+        if (!map.current) return;
+    
+        const updateMapData = async () => {
+            try {
+                // Load the new wave data
+                const waveResponse = await fetch(dataPath);
+                if (!waveResponse.ok) {
+                    throw new Error('Failed to load wave height data');
+                }
+                
+                const waveData = await waveResponse.json();
+                console.log('Wave data loaded:', waveData.features.length, 'features');
+                
+                // Update the source with the new data
+                if (map.current.getSource('wave-height-grid')) {
+                    map.current.getSource('wave-height-grid').setData(waveData);
+                }
+            } catch (err) {
+                console.error('Error updating map data:', err);
+                setError('Failed to update map data');
+            }
+        };
+    
+        // Only update if the map is fully loaded
+        if (map.current.loaded()) {
+            updateMapData();
+        } else {
+            map.current.once('load', updateMapData);
+        }
+    }, [dataPath]);
     const fetchLayerData = async (layerName, temporalType, timePeriod) => {
         try {
             const response = await fetch(
@@ -31,6 +64,42 @@ const Map = () => {
     };
 
     const roundToHundredth = (num) => Math.round(num * 100) / 100;
+    const dirToWord = (deg) => {
+        console.log(deg);
+        if ((deg >= 0 && deg < 15) || (deg >= 345 && deg < 360)) {
+            return 'N';
+        }
+        else if (deg >= 330 && deg < 345)
+            return 'NNW';
+        else if (deg >= 300 && deg < 330)
+            return 'NW';
+        else if (deg >= 285 && deg < 300)
+            return 'WNW';
+        else if (deg >= 255 && deg < 285)
+            return 'W';
+        else if (deg >= 240 && deg < 255)
+            return 'WSW';
+        else if (deg >= 210 && deg < 240)
+            return 'SW';
+        else if (deg >= 195 && deg < 210)
+            return 'SSW';
+        else if (deg >= 165 && deg < 195)
+            return 'S';
+        else if (deg >= 150 && deg < 165)
+            return 'SSE';
+        else if (deg >= 120 && deg < 150)
+            return 'SE';
+        else if (deg >= 105 && deg < 120)
+            return 'ESE';
+        else if (deg >= 75 && deg < 105)
+            return 'E';
+        else if (deg >= 60 && deg < 75)
+            return 'ENE';
+        else if (deg >= 30 && deg < 60)
+            return 'NE';
+        else if (deg >= 15 && deg < 30)
+            return 'NNE';
+    }
 
     const updateDataAtCursor = () => {
         if (!map.current) {
@@ -47,15 +116,18 @@ const Map = () => {
             { layers: ['wave-height-grid-layer'] }
         );
 
-        console.log('Features at cursor:', features); // Debug log
-
         const lng = roundToHundredth(currentCenter.lng);
         const lat = roundToHundredth(currentCenter.lat);
         let wvht = 'N/A';
+        let period = 'N/A';
+        let dir = 'N/A';
+        let dir_word = 'N/A';
 
         if (features.length > 0 && features[0].properties) {
             wvht = roundToHundredth(features[0].properties.wave_height_ft);
-            console.log('Wave height found:', wvht); // Debug log
+            period = roundToHundredth(features[0].properties.wave_period_s);
+            dir = roundToHundredth(features[0].properties.wave_direction_deg);
+            console.log(dirToWord(180))
         }
 
         if (dataDisplay.current) {
@@ -63,8 +135,8 @@ const Map = () => {
                 <div class="text-sm">
                     <div class="font-medium">Coordinates: ${lng}, ${lat}</div>
                     <div>Wave Height: ${wvht} ft</div>
-                    <div>Period: n/a </div>
-                    <div>Direction: n/a </div>
+                    <div>Period: ${period}s </div>
+                    <div>Direction: ${dir} ${dirToWord(dir)} </div>
                 </div>
             `;
         }
@@ -155,6 +227,17 @@ const Map = () => {
             map.current.setPaintProperty('wave-height-grid-layer', 'fill-color', getColorScale(colorMode, newMode));
         }
     };
+    
+    const toggleDataSource = () => {
+        const newDataSource = dataSource === '2025' ? '40' : '2025';
+        setDataSource(newDataSource);
+
+        const newDataPath = dataPath === '/geojson/scripts/Converters/wave_parameters_grid5.geojson' ? '/geojson/wave_height_grid.geojson' :'/geojson/scripts/Converters/wave_parameters_grid5.geojson'
+        setDataPath(newDataPath);
+
+        console.log(dataSource)
+        
+    }
 
     useEffect(() => {
         if (map.current) return;
@@ -220,7 +303,7 @@ const Map = () => {
                     });
 
                     // Load the wave data
-                    const waveResponse = await fetch('/geojson/wave_height_grid.geojson');
+                    const waveResponse = await fetch(dataPath);
                     if (!waveResponse.ok) {
                         throw new Error('Failed to load wave height data');
                     }
@@ -284,6 +367,12 @@ const Map = () => {
                     className="bg-white px-3 py-2 rounded shadow z-10 hover:bg-gray-100"
                 >
                     {interpolationMode === 'step' ? 'Smooth' : 'Contours'}
+                </button>
+                <button
+                    onClick={toggleDataSource}
+                    className="bg-white px-3 py-2 rounded shadow z-10 hover:bg-gray-100"
+                >
+                    {dataSource === '40' ?  '40 yr avg' : '2025 avg'}
                 </button>
             </div>
         </div>

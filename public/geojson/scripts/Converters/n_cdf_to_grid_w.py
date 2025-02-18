@@ -3,6 +3,7 @@ import numpy as np
 import geojson
 import argparse
 
+
 # Set up argument parser to take the NetCDF file name as a command line argument
 parser = argparse.ArgumentParser(description='Process NetCDF data and create a GeoJSON grid for wave height.')
 parser.add_argument('netcdf_file', type=str, help='Path to the NetCDF file')
@@ -10,17 +11,29 @@ parser.add_argument('netcdf_file', type=str, help='Path to the NetCDF file')
 # Parse the arguments
 args = parser.parse_args()
 
+
 # Load the NetCDF data
 netcdf_file = args.netcdf_file
 ds = nc.Dataset(netcdf_file)
+print('reading ' + netcdf_file)
 
 # Extract latitude, longitude, and wave height data
 latitude = ds.variables['latitude'][:]
 longitude = ds.variables['longitude'][:]
-wave_height_meters = ds.variables['swh'][:, :]  # Adjusted slicing for 2D data (no time dimension)
+
+wave_height_meters = ds.variables['swh'][0, :, :]  # Adjusted slicing for 2D data (no time dimension)
+wave_direction = ds.variables['mwd'][0, :, :]
+wave_period = ds.variables['mwp'][0, :, :]
 
 # Convert wave height from meters to feet
 wave_height_feet = wave_height_meters * 3.28084
+
+print("Data shapes:")
+print(f"Latitude: {latitude.shape}")
+print(f"Longitude: {longitude.shape}")
+print(f"Wave height: {wave_height_feet.shape}")
+print(f"Wave Direction: {wave_direction.shape}")
+print(f"Wave Period: {wave_period.shape}")
 
 # Function to round coordinates to the nearest grid point
 def snap_to_grid(value, grid_size):
@@ -75,7 +88,7 @@ for i in range(len(latitude) - 1):
 grid_geojson = geojson.FeatureCollection(grid_features)
 
 # Save to a GeoJSON file
-output_file = 'wave_height_grid.geojson'
+output_file = 'wave_height_grid_jan25.geojson'
 with open(output_file, 'w') as f:
     geojson.dump(grid_geojson, f)
 
