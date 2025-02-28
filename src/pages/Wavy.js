@@ -4,7 +4,6 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import Link from 'next/link';
 import { useState } from 'react';
 import MonthTimeline from '@/components/MonthTimeline';
-console.log('Token available:', process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN);
 export default function Wavy() {
 
     const [showPopup, setShowPopup] =  useState(true);

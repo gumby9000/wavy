@@ -17,9 +17,7 @@
     "supabase": "^2.9.6"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
-    "eslint": "^9",
-    "eslint-config-next": "15.1.6",
+    "globals": "^16.0.0",
     "postcss": "^8",
     "tailwindcss": "^3.4.1"
   }
