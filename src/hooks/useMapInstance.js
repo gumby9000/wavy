@@ -164,7 +164,7 @@ export const useMapInstance = (initialCenter, initialZoom) => {
       height = roundToHundredth(features[0].properties.wave_height_ft);
       period = roundToHundredth(features[0].properties.wave_period_s);
       direction = roundToHundredth(features[0].properties.wave_direction_deg);
-      energy = roundToHundredth(features[0].properties.wave_energy_j/1000);
+      energy = roundToHundredth(features[0].properties.wave_energy_j);
     }
 
     setWaveData({ height, period, direction, energy });

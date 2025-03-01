@@ -17,7 +17,7 @@ const DataDisplay = ({ coords, waveData }) => {
         <div>Wave Height: {height} ft</div>
         <div>Period: {period}s </div>
         <div>Direction: {direction} {dirToWord(direction)} </div>
-        <div>Energy: {energy}kj </div>
+        <div>Energy: {energy}j </div>
       </div>
     </div>
   );
