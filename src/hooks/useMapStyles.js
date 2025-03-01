@@ -6,7 +6,15 @@ export const useMapStyles = () => {
   const [visualParam, setVisualParam] = useState('height');
 
   const toggleParameter = () => {
-    const newParam = visualParam === 'height' ? 'period' : 'height';
+    
+    let newParam;
+    if (visualParam === 'height') {
+      newParam = 'period';
+    } else if (visualParam === 'period') {
+      newParam = 'energy';
+    } else {
+      newParam = 'height';
+    }
     setVisualParam(newParam);
     return newParam;
   };
@@ -122,12 +130,51 @@ export const useMapStyles = () => {
 
     return cMode === 'absolute' ? absoluteColors : relativeColors;
   };
+  
+  const getEnergyScale = (iMode) => {
+    const energyColors = iMode === 'step' ? [
+      'step',
+      ['linear'],
+      ['log10', ['+', ['get', 'wave_energy_j'], 1]],
+      0, '#0a1597',    // log10(1) = 0
+      0.52, '#1734f9', // log10(3.3) ≈ 0.52
+      1.04, '#106dfb', // log10(11) ≈ 1.04
+      1.56, '#009bfc', // log10(36) ≈ 1.56
+      2.08, '#00c9fc', // log10(120) ≈ 2.08
+      2.6, '#00fdcb',  // log10(400) ≈ 2.6
+      3.12, '#00fc9c', // log10(1,300) ≈ 3.12
+      3.64, '#00f95c', // log10(4,400) ≈ 3.64
+      4.16, '#8cfb38', // log10(14,500) ≈ 4.16
+      4.68, '#c9fc3a', // log10(48,000) ≈ 4.68
+      5.15, '#fcfa3a'  // log10(140,000) ≈ 5.15
+    ] : [
+      'interpolate',
+      ['linear'],
+      ['log10', ['+', ['get', 'wave_energy_j'], 1]],
+      0, '#0a1597',    // log10(1) = 0
+      0.52, '#1734f9', // log10(3.3) ≈ 0.52
+      1.04, '#106dfb', // log10(11) ≈ 1.04
+      1.56, '#009bfc', // log10(36) ≈ 1.56
+      2.08, '#00c9fc', // log10(120) ≈ 2.08
+      2.6, '#00fdcb',  // log10(400) ≈ 2.6
+      3.12, '#00fc9c', // log10(1,300) ≈ 3.12
+      3.64, '#00f95c', // log10(4,400) ≈ 3.64
+      4.16, '#8cfb38', // log10(14,500) ≈ 4.16
+      4.68, '#c9fc3a', // log10(48,000) ≈ 4.68
+      5.15, '#fcfa3a'  // log10(140,000) ≈ 5.15
+    ];
+    
+    return energyColors;
+  };
 
   const getColorScale = () => {
     if (visualParam === 'period') {
       return getPeriodColorScale(interpolationMode);
+    } else if (visualParam === 'height') {
+      return getHeightColorScale(colorMode, interpolationMode);
+    } else {
+      return getEnergyScale(interpolationMode);
     }
-    return getHeightColorScale(colorMode, interpolationMode);
   };
 
   return {

@@ -9,7 +9,7 @@ import DataDisplay from './DataDisplay';
 import MapControls from './MapControls';
 
 const Map = () => {
-    const initialDataPath = '/geojson/scripts/Converters/wave_parameters_grid5.geojson';
+    const initialDataPath = '/geojson/scripts/Converters/wave_parameters_grid6.geojson';
     
     const {
         dataPath,

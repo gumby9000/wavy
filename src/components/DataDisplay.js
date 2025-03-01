@@ -3,10 +3,11 @@ import { roundToHundredth, dirToWord } from '../utils/directionUtils';
 
 const DataDisplay = ({ coords, waveData }) => {
   const { lng, lat } = coords || { lng: 'N/A', lat: 'N/A' };
-  const { height, period, direction } = waveData || { 
+  const { height, period, direction, energy } = waveData || { 
     height: 'N/A', 
     period: 'N/A', 
-    direction: 'N/A' 
+    direction: 'N/A',
+    energy: 'N/A'
   };
 
   return (
@@ -16,6 +17,7 @@ const DataDisplay = ({ coords, waveData }) => {
         <div>Wave Height: {height} ft</div>
         <div>Period: {period}s </div>
         <div>Direction: {direction} {dirToWord(direction)} </div>
+        <div>Energy: {energy}kj </div>
       </div>
     </div>
   );

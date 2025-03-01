@@ -12,7 +12,7 @@ const Map = () => {
     const [colorMode, setColorMode] = useState('relative');
     const [interpolationMode, setInterpolationMode] = useState('interpolate');
     const [dataSource, setDataSource] = useState('2025')
-    const [dataPath, setDataPath] = useState('/geojson/scripts/Converters/wave_parameters_grid5.geojson')
+    const [dataPath, setDataPath] = useState('/geojson/scripts/Converters/wave_parameters_grid6.geojson')
     const [visualParam, setVisualParam] = useState('height');
 
     useEffect(() => {
@@ -268,7 +268,7 @@ const Map = () => {
         const newDataSource = dataSource === '2025' ? '40' : '2025';
         setDataSource(newDataSource);
 
-        const newDataPath = dataPath === '/geojson/scripts/Converters/wave_parameters_grid5.geojson' ? '/geojson/wave_height_grid.geojson' :'/geojson/scripts/Converters/wave_parameters_grid5.geojson'
+        const newDataPath = dataPath === '/geojson/scripts/Converters/wave_parameters_grid6.geojson' ? '/geojson/wave_height_grid.geojson' :'/geojson/scripts/Converters/wave_parameters_grid6.geojson'
         setDataPath(newDataPath);
 
         console.log(dataSource)

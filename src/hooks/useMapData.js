@@ -10,9 +10,9 @@ export const useMapData = (initialDataPath) => {
     const newDataSource = dataSource === '2025' ? '40' : '2025';
     setDataSource(newDataSource);
 
-    const newDataPath = dataPath === '/geojson/scripts/Converters/wave_parameters_grid5.geojson' 
+    const newDataPath = dataPath === '/geojson/scripts/Converters/wave_parameters_grid6.geojson' 
       ? '/geojson/wave_height_grid.geojson' 
-      : '/geojson/scripts/Converters/wave_parameters_grid5.geojson';
+      : '/geojson/scripts/Converters/wave_parameters_grid6.geojson';
     
     setDataPath(newDataPath);
   };

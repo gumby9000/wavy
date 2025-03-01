@@ -17,11 +17,24 @@ const MapControls = ({
   dataSource,
   toggleDataSource
 }) => {
+  
+  const getParameterButtonLabel = () => {
+    switch(visualParam) {
+      case 'height':
+        return 'Show Period';
+      case 'period':
+        return 'Show Energy';
+      case 'energy':
+        return 'Show Height';
+      default:
+        return 'Change Parameter';
+    }
+  };
   return (
     <div className="absolute top-20 pt-10 right-4 flex flex-col gap-2">
       <ControlButton 
         onClick={toggleParameter}
-        label={visualParam === 'height' ? 'Show Period' : 'Show Height'}
+        label={getParameterButtonLabel()}
       />
       <ControlButton 
         onClick={toggleInterpolationMode}

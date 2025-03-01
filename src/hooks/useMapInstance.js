@@ -11,7 +11,8 @@ export const useMapInstance = (initialCenter, initialZoom) => {
   const [waveData, setWaveData] = useState({
     height: 'N/A',
     period: 'N/A',
-    direction: 'N/A'
+    direction: 'N/A',
+    energy: 'N/A'
   });
 
   const initializeMap = () => {
@@ -86,7 +87,7 @@ export const useMapInstance = (initialCenter, initialZoom) => {
       }
     });
 
-    const waveResponse = await fetch('/geojson/scripts/Converters/wave_parameters_grid5.geojson');
+    const waveResponse = await fetch('/geojson/scripts/Converters/wave_parameters_grid6.geojson');
     const waveData = await waveResponse.json();
     map.current.getSource('wave-height-grid').setData(waveData);
 
@@ -157,14 +158,16 @@ export const useMapInstance = (initialCenter, initialZoom) => {
     let height = 'N/A';
     let period = 'N/A';
     let direction = 'N/A';
+    let energy = 'N/A';
 
     if (features.length > 0 && features[0].properties) {
       height = roundToHundredth(features[0].properties.wave_height_ft);
       period = roundToHundredth(features[0].properties.wave_period_s);
       direction = roundToHundredth(features[0].properties.wave_direction_deg);
+      energy = roundToHundredth(features[0].properties.wave_energy_j/1000);
     }
 
-    setWaveData({ height, period, direction });
+    setWaveData({ height, period, direction, energy });
     setCenterPoint({ lng, lat });
     
     // Update marker position
