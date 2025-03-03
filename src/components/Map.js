@@ -7,6 +7,7 @@ import { useMapStyles } from '../hooks/useMapStyles';
 import { useMapData } from '../hooks/useMapData';
 import DataDisplay from './DataDisplay';
 import MapControls from './MapControls';
+import PixiOverlay from "./PixiOverlay";
 
 const Map = () => {
     const initialDataPath = '/geojson/scripts/Converters/wave_parameters_grid6.geojson';
@@ -98,6 +99,15 @@ const Map = () => {
                 className="absolute inset-0"
             />
             
+            {map.current && waveData && (
+                <PixiOverlay
+                    map={map}
+                    waveData={waveData}
+                    visualParam={visualParam}
+                    colorMode={colorMode}
+                />
+            )}
+
             {centerPoint && (
                 <DataDisplay 
                     coords={centerPoint} 
