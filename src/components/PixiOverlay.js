@@ -22,7 +22,7 @@ const PixiOverlay = ({map, waveData, visualParam, colorMode}) => {
 
                 await app.init({
                     canvas,
-                    backgroundAlpha: 0.25,
+                    backgroundAlpha: 0,
                     antialias: true,
                     autoDensity: true,
                     resolution: window.devicePixelRatio || 1,
@@ -51,6 +51,9 @@ const PixiOverlay = ({map, waveData, visualParam, colorMode}) => {
                     console.log('syncing canvas size');
                     pixiApp.current.renderer.view.width = width;
                     pixiApp.current.renderer.view.height = height;
+                    
+                    container.x = app.screen.width / 2;
+                    container.y = app.screen.height / 2;
                     renderWaveData();
                 };
 
@@ -67,7 +70,7 @@ const PixiOverlay = ({map, waveData, visualParam, colorMode}) => {
                 const texture = await PIXI.Assets.load('https://pixijs.com/assets/bunny.png');
 
                 // Create a 5x5 grid of bunnies
-                for (let i = 0; i < 25; i++)
+                for (let i = 0; i < 1; i++)
                 {
                     const bunny = new PIXI.Sprite(texture);
             
