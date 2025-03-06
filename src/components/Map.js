@@ -99,14 +99,14 @@ const Map = () => {
                 className="absolute inset-0"
             />
             
-            {map.current && waveData && (
+            {/* {map.current && waveData && (
                 <PixiOverlay
                     map={map}
                     waveData={waveData}
                     visualParam={visualParam}
                     colorMode={colorMode}
                 />
-            )}
+            )} */}
 
             {centerPoint && (
                 <DataDisplay 

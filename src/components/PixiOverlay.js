@@ -93,7 +93,7 @@ const PixiOverlay = ({map, waveData, visualParam, colorMode}) => {
                 {
                     // Rotate the container!
                     // * use delta to create frame-independent transform *
-                    container.rotation -= 0.01 * time.deltaTime;
+                    container.rotation += 0.01 * time.deltaTime;
                 });
                 renderWaveData();
 

@@ -1,9 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
 import { roundToHundredth } from '../utils/directionUtils';
-
+import * as PIXI from 'pixi.js'
 export const useMapInstance = (initialCenter, initialZoom) => {
   const mapContainer = useRef(null);
+  const pixiContainer = useRef(null);
+  const pixiApp = useRef(null);
+  const container = useRef(null);
+  const graphicsLayer = useRef(null);
+
   const map = useRef(null);
   const marker = useRef(null);
   const [error, setError] = useState(null);
@@ -100,6 +105,147 @@ export const useMapInstance = (initialCenter, initialZoom) => {
         'fill-opacity': 0.8
       }
     });
+    
+    // const highlightLayer = {
+    //   id: 'highlight',
+    //   type: 'custom',
+
+    //   onAdd: function (map, gl) {
+    //     const vertexSource = `
+    //                 uniform mat4 u_matrix;
+    //                 attribute vec2 a_pos;
+    //                 void main() {
+    //                     gl_Position = u_matrix * vec4(a_pos, 0.0, 1.0);
+    //                 }`;
+
+    //     const fragmentSource = `
+    //                 void main() {
+    //                     gl_FragColor = vec4(1.0, 0.0, 0.0, 0.5);
+    //                 }`;
+
+    //     const vertexShader = gl.createShader(gl.VERTEX_SHADER);
+    //     gl.shaderSource(vertexShader, vertexSource);
+    //     gl.compileShader(vertexShader);
+
+    //     const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+    //     gl.shaderSource(fragmentShader, fragmentSource);
+    //     gl.compileShader(fragmentShader);
+
+    //     this.program = gl.createProgram();
+    //     gl.attachShader(this.program, vertexShader);
+    //     gl.attachShader(this.program, fragmentShader);
+    //     gl.linkProgram(this.program);
+
+    //     this.aPos = gl.getAttribLocation(this.program, 'a_pos');
+
+    //     const helsinki = mapboxgl.MercatorCoordinate.fromLngLat({
+    //       lng: 25.004,
+    //       lat: 60.239
+    //     });
+    //     const berlin = mapboxgl.MercatorCoordinate.fromLngLat({
+    //       lng: 13.403,
+    //       lat: 52.562
+    //     });
+    //     const kyiv = mapboxgl.MercatorCoordinate.fromLngLat({
+    //       lng: 30.498,
+    //       lat: 50.541
+    //     });
+
+    //     this.buffer = gl.createBuffer();
+    //     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
+    //     gl.bufferData(
+    //       gl.ARRAY_BUFFER,
+    //       new Float32Array([
+    //         helsinki.x,
+    //         helsinki.y,
+    //         berlin.x,
+    //         berlin.y,
+    //         kyiv.x,
+    //         kyiv.y
+    //       ]),
+    //       gl.STATIC_DRAW
+    //     );
+    //     console.log('web gl layer initialized');
+    //   },
+
+    //   render: function (gl, matrix) {
+    //     gl.useProgram(this.program);
+    //     gl.uniformMatrix4fv(
+    //       gl.getUniformLocation(this.program, 'u_matrix'),
+    //       false,
+    //       matrix
+    //     );
+    //     gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
+    //     gl.enableVertexAttribArray(this.aPos);
+    //     gl.vertexAttribPointer(this.aPos, 2, gl.FLOAT, false, 0, 0);
+    //     gl.enable(gl.BLEND);
+    //     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    //     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 3);
+    //   }
+    // };
+
+    // const pixiLayer = {
+    //   id: 'pixi',
+    //   type: 'custom',
+
+    //   onAdd: function (map, gl) {
+    //     const canvas = document.createElement('canvas');
+    //     canvas.width = map.getCanvas().width;
+    //     canvas.height = map.getCanvas().height;
+        
+    //     const app = new PIXI.Application();
+
+        
+    //     const initApp = async() => {
+    //       await app.init({
+    //       canvas,
+    //       backgroundAlpha: 0,
+    //       antialias: true,
+    //       autoDensity: true,
+    //           resolution: window.devicePixelRatio || 1,
+    //           resizeTo: window,
+    //           autoStart: false
+    //       });
+    //     }
+    //     initApp();
+        
+    //     this.pixiApp = app;
+    //     // container.current = new PIXI.Container();
+
+    //     // app.stage.addChild(container);
+        
+    //     // graphicsLayer.current = new PIXI.Graphics();
+    //     // app.stage.addChild(container);
+        
+    //         // Create a graphics object for the triangle
+    //     this.graphics = new PIXI.Graphics();
+    //     this.pixiApp.stage.addChild(this.graphics);
+
+    //     // Draw the triangle
+    //     this.graphics.beginFill(0xff0000); // Red color
+    //     this.graphics.drawPolygon([
+    //       100, 100,  // Point 1
+    //       200, 300,  // Point 2
+    //       300, 100   // Point 3
+    //     ]);
+    //     this.graphics.endFill();
+    //   },
+
+    //   render: function(gl, matrix) {
+    //     const app = this.pixiApp;
+
+    //     // Ensure PixiJS app exists
+    //     if (!app || !this.pixiApp.renderer ||!this.graphics.geometry) return;
+    
+    //     this.pixiApp.renderer.render(this.pixiApp.stage);
+    //     console.log('Triangle drawn:', this.graphics.geometry.graphicsData);
+
+    //     console.log('rendered')
+    //   }
+
+    // };
+    // map.current.addLayer(highlightLayer);
+    // map.current.addLayer(pixiLayer);
     console.log('Data source setup complete!')
   };
 
