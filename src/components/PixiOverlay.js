@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import * as PIXI from 'pixi.js';
 import {debounce} from 'lodash';
 
@@ -7,6 +7,18 @@ const PixiOverlay = ({map, waveData, visualParam, colorMode}) => {
     const pixiApp = useRef(null);
     const graphicsLayer = useRef(null);
     
+    const [geoCords] = useState({
+        lat: 37.7749,
+        lng: -122.4194,
+        size: 0.5
+    });
+    
+    const [boundingBox, setBoundingBox] = useState([
+        [-87.634896, 31.000888], // Top-left (northwest)
+        [-79.974306, 31.000888], // Top-right (northeast)
+        [-79.974306, 24.396308], // Bottom-right (southeast)
+        [-87.634896, 24.396308]  // Bottom-left (southwest)
+    ]);
     useEffect(() => {
         if (!map.current || !pixiContainer.current) return;
         console.log('attempting to init pixi!');
@@ -59,7 +71,7 @@ const PixiOverlay = ({map, waveData, visualParam, colorMode}) => {
 
                 const onMapMove = debounce(() => {
                     renderWaveData();
-                }, 100);
+                }, 0);
                 
                 const onResize = debounce(syncCanvasSize, 200);
                 
@@ -77,7 +89,7 @@ const PixiOverlay = ({map, waveData, visualParam, colorMode}) => {
                     bunny.anchor.set(0);
                     bunny.x = (i % 5) * 40;
                     bunny.y = Math.floor(i / 5) * 40;
-                    container.addChild(bunny);
+                    // container.addChild(bunny);
                 }
             
                 // Move container to the center
@@ -115,8 +127,50 @@ const PixiOverlay = ({map, waveData, visualParam, colorMode}) => {
     }, [map.current]);
     
     const renderWaveData = () => {
-        // if (!map.current || !pixiApp.current || !graphicsLayer.current || !waveData) return;
-    }
+        if (!map.current || !pixiApp.current || !graphicsLayer.current || !waveData) return;
+
+        graphicsLayer.current.clear();
+
+        for(let lon=boundingBox[0][0]; lon<= boundingBox[1][0]; lon+=0.5)
+        {
+            for(let lat=boundingBox[0][1]; lat<= boundingBox[1][1]; lat+=0.5)
+            {
+               const tempLeftPixel = map.current.project([lon, lat]);
+               const tempRightPixel = map.current.project([lon+0.5, lat+0.5]);
+               const tempWidth = tempRightPixel.x - tempLeftPixel.x;
+               const tempHeight = tempRightPixel.y - tempLeftPixel.y*-1;
+                console.log(tempLeftPixel)
+                console.log(tempRightPixel)
+                
+                console.log(tempWidth)
+                console.log(tempHeight)
+            
+                graphicsLayer.current.beginFill(0x338ff, 0.6);
+                graphicsLayer.current.lineStyle(2, 0x0066cc, 1);
+                graphicsLayer.current.drawRect(tempLeftPixel.x, tempLeftPixel.y, tempWidth, tempHeight);
+                graphicsLayer.current.endFill();
+            }
+        }
+        const topLeft = {
+            lat: geoCords.lat + geoCords.size/2,
+            lng: geoCords.lng - geoCords.size/2
+        };
+        const bottomRight = {
+            lat: geoCords.lat - geoCords.size/2,
+            lng: geoCords.lng + geoCords.size/2
+        };
+        
+        const topLeftPixel = map.current.project([topLeft.lng, topLeft.lat]);
+        const bottomRightPixel = map.current.project([bottomRight.lng, bottomRight.lat]);
+        
+        const width = bottomRightPixel.x - topLeftPixel.x;
+        const height = bottomRightPixel.y - topLeftPixel.y;
+        
+        graphicsLayer.current.beginFill(0x338ff, 0.6);
+        graphicsLayer.current.lineStyle(2, 0x0066cc, 1);
+        graphicsLayer.current.drawRect(topLeftPixel.x, topLeftPixel.y, width, height);
+        graphicsLayer.current.endFill();
+    };
     
     return (
         <div

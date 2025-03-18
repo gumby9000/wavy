@@ -3,7 +3,7 @@ import { useState } from 'react';
 export const useMapStyles = () => {
   const [colorMode, setColorMode] = useState('relative');
   const [interpolationMode, setInterpolationMode] = useState('interpolate');
-  const [visualParam, setVisualParam] = useState('energy');
+  const [visualParam, setVisualParam] = useState('height');
 
   const toggleParameter = () => {
     

@@ -4,6 +4,7 @@ import { roundToHundredth } from '../utils/directionUtils';
 import * as PIXI from 'pixi.js'
 export const useMapInstance = (initialCenter, initialZoom) => {
   const mapContainer = useRef(null);
+  const layerId = useRef('pixi-custom-layer');
   const pixiContainer = useRef(null);
   const pixiApp = useRef(null);
   const container = useRef(null);
@@ -20,6 +21,11 @@ export const useMapInstance = (initialCenter, initialZoom) => {
     energy: 'N/A'
   });
 
+  const [geoCoords] = useState({
+      lat: 37.7749,
+      lng: -122.4194,
+      size: 0.5
+  });
   const initializeMap = () => {
     if (map.current) return;
 
@@ -184,68 +190,6 @@ export const useMapInstance = (initialCenter, initialZoom) => {
     //   }
     // };
 
-    // const pixiLayer = {
-    //   id: 'pixi',
-    //   type: 'custom',
-
-    //   onAdd: function (map, gl) {
-    //     const canvas = document.createElement('canvas');
-    //     canvas.width = map.getCanvas().width;
-    //     canvas.height = map.getCanvas().height;
-        
-    //     const app = new PIXI.Application();
-
-        
-    //     const initApp = async() => {
-    //       await app.init({
-    //       canvas,
-    //       backgroundAlpha: 0,
-    //       antialias: true,
-    //       autoDensity: true,
-    //           resolution: window.devicePixelRatio || 1,
-    //           resizeTo: window,
-    //           autoStart: false
-    //       });
-    //     }
-    //     initApp();
-        
-    //     this.pixiApp = app;
-    //     // container.current = new PIXI.Container();
-
-    //     // app.stage.addChild(container);
-        
-    //     // graphicsLayer.current = new PIXI.Graphics();
-    //     // app.stage.addChild(container);
-        
-    //         // Create a graphics object for the triangle
-    //     this.graphics = new PIXI.Graphics();
-    //     this.pixiApp.stage.addChild(this.graphics);
-
-    //     // Draw the triangle
-    //     this.graphics.beginFill(0xff0000); // Red color
-    //     this.graphics.drawPolygon([
-    //       100, 100,  // Point 1
-    //       200, 300,  // Point 2
-    //       300, 100   // Point 3
-    //     ]);
-    //     this.graphics.endFill();
-    //   },
-
-    //   render: function(gl, matrix) {
-    //     const app = this.pixiApp;
-
-    //     // Ensure PixiJS app exists
-    //     if (!app || !this.pixiApp.renderer ||!this.graphics.geometry) return;
-    
-    //     this.pixiApp.renderer.render(this.pixiApp.stage);
-    //     console.log('Triangle drawn:', this.graphics.geometry.graphicsData);
-
-    //     console.log('rendered')
-    //   }
-
-    // };
-    // map.current.addLayer(highlightLayer);
-    // map.current.addLayer(pixiLayer);
     console.log('Data source setup complete!')
   };
 
